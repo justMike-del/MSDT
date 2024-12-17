@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-import random, math
+from tkinter import ttk
+import random
+import math
 from PIL import Image, ImageDraw, ImageTk
 
 class Main:
