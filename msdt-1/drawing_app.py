@@ -129,15 +129,15 @@ class InputCurcleControlPanel(tk.Frame):
         self.radius_value.grid(row=1, column=1)
 
         draw_button = tk.Button(self, text="Отрисовка",
-            command=self.draw_circle)
+                                command=self.draw_circle)
         draw_button.grid(row=2, column=0, columnspan=2)
 
         clear_button = tk.Button(self, text="Очистить",
-            command=self.clear_board)
+                                 command=self.clear_board)
         clear_button.grid(row=2, column=2)
 
         random_button = tk.Button(self, text="Рандом",
-            command=self.random_circle)
+                                  command=self.random_circle)
         random_button.grid(row=2, column=3)
 
     def draw_circle(self):
