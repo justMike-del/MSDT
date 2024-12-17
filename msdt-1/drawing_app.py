@@ -28,7 +28,7 @@ class FramePanel(tk.Tk):
         self.tabbed_panel.add(InputCurcleControlPanel(self.board, self), text="Окружность, естественный")
         self.tabbed_panel.add(InputCurcleControlPanel(self.board, self, algorithm='bresenham'), text="Окружность, Брезенхама")
         self.tabbed_panel.add(InputLissajousControlPanel(self.board, self), text="Лиссажу")
-        self.tabbed_panel.add(FugureFillControlPanel(self.board, self, algorithm='modified'), text="Модифицированный с затравкой")
+        self.tabbed_panel.add(FugureFillControlPanel(self.board, self, algorithm='modified'),text="Модифицированный с затравкой")
         self.tabbed_panel.add(FugureFillControlPanel(self.board, self, algorithm='bark'), text="Короеда")
 
     def setup_layout(self):
@@ -199,11 +199,12 @@ class InputLissajousControlPanel(tk.Frame):
     def draw_lissajous(self):
         x0 = int(self.center_x.get())
         y0 = int(self.center_y.get())
-        rX = int(self.radius_x.get())
-        rY = int(self.radius_y.get())
-        oX = int(self.freq_x.get())
-        oY = int(self.freq_y.get())
-        Algorithms.parameter_lissajous_drawing(self.board, (x0, y0), rX, rY, oX, oY)
+        r_x = int(self.radius_x.get())
+        r_y = int(self.radius_y.get())
+        o_x = int(self.freq_x.get())
+        o_y = int(self.freq_y.get())
+        Algorithms.parameter_lissajous_drawing(self.board, (x0, y0),
+                                               r_x, r_y, o_x, o_y)
         self.board.paint()
 
     def clear_board(self):
@@ -212,10 +213,10 @@ class InputLissajousControlPanel(tk.Frame):
     def random_lissajous(self):
         x0 = random.randint(100, 300)
         y0 = random.randint(100, 300)
-        rX = random.randint(50, 150)
-        rY = random.randint(50, 150)
-        oX = random.randint(1, 20)
-        oY = random.randint(1, 20)
+        r_x = random.randint(50, 150)
+        r_y = random.randint(50, 150)
+        o_x = random.randint(1, 20)
+        o_y = random.randint(1, 20)
         self.center_x.delete(0, tk.END)
         self.center_y.delete(0, tk.END)
         self.radius_x.delete(0, tk.END)
@@ -224,10 +225,10 @@ class InputLissajousControlPanel(tk.Frame):
         self.freq_y.delete(0, tk.END)
         self.center_x.insert(0, str(x0))
         self.center_y.insert(0, str(y0))
-        self.radius_x.insert(0, str(rX))
-        self.radius_y.insert(0, str(rY))
-        self.freq_x.insert(0, str(oX))
-        self.freq_y.insert(0, str(oY))
+        self.radius_x.insert(0, str(r_x))
+        self.radius_y.insert(0, str(r_y))
+        self.freq_x.insert(0, str(o_x))
+        self.freq_y.insert(0, str(o_y))
         self.draw_lissajous()
 
 class FugureFillControlPanel(tk.Frame):
@@ -281,19 +282,19 @@ class Algorithms:
 
     @staticmethod
     def natural_circle_drawing(board, center, radius):
-        xc, yc = center
+        x_c, y_c = center
         for x in range(-radius, radius + 1):
             y = int((radius**2 - x**2)**0.5)
-            board.draw_point(xc + x, yc + y)
-            board.draw_point(xc + x, yc - y)
+            board.draw_point(x_c + x, y_c + y)
+            board.draw_point(x_c + x, y_c - y)
 
     @staticmethod
-    def parameter_lissajous_drawing(board, center, rx, ry):
-        xc, yc = center
+    def parameter_lissajous_drawing(board, center, r_x, r_y):
+        x_c, y_c = center
         for t in range(0, 360):
-            x = int(rx * (t / 180.0) * math.pi)
-            y = int(ry * (t / 180.0) * math.pi)
-            board.draw_point(xc + x, yc + y)
+            x = int(r_x * (t / 180.0) * math.pi)
+            y = int(r_y * (t / 180.0) * math.pi)
+            board.draw_point(x_c + x, y_c + y)
 
     @staticmethod
     def modified_recurant_fill(board, x0, y0):
