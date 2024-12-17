@@ -23,13 +23,27 @@ class FramePanel(tk.Tk):
         self.setup_layout()
 
     def setup_tabs(self):
-        self.tabbed_panel.add(InputLineControlPanel(self.board, self), text="Прямая, естественный")
-        self.tabbed_panel.add(InputLineControlPanel(self.board, self, algorithm='bresenham'), text="Прямая, Брезенхама")
-        self.tabbed_panel.add(InputCurcleControlPanel(self.board, self), text="Окружность, естественный")
-        self.tabbed_panel.add(InputCurcleControlPanel(self.board, self, algorithm='bresenham'), text="Окружность, Брезенхама")
-        self.tabbed_panel.add(InputLissajousControlPanel(self.board, self), text="Лиссажу")
-        self.tabbed_panel.add(FugureFillControlPanel(self.board, self, algorithm='modified'),text="Модифицированный с затравкой")
-        self.tabbed_panel.add(FugureFillControlPanel(self.board, self, algorithm='bark'), text="Короеда")
+        self.tabbed_panel.add(
+            InputLineControlPanel(self.board, self),
+            text="Прямая, естественный")
+        self.tabbed_panel.add(
+            InputLineControlPanel(self.board, self, algorithm='bresenham'),
+            text="Прямая, Брезенхама")
+        self.tabbed_panel.add(
+            InputCurcleControlPanel(self.board, self),
+            text="Окружность, естественный")
+        self.tabbed_panel.add(
+            InputCurcleControlPanel(self.board, self, algorithm='bresenham'),
+            text="Окружность, Брезенхама")
+        self.tabbed_panel.add(
+            InputLissajousControlPanel(self.board, self),
+            text="Лиссажу")
+        self.tabbed_panel.add(
+            FugureFillControlPanel(self.board, self, algorithm='modified'),
+            text="Модифицированный с затравкой")
+        self.tabbed_panel.add(
+            FugureFillControlPanel(self.board, self, algorithm='bark'),
+            text="Короеда")
 
     def setup_layout(self):
         self.tabbed_panel.pack(expand=1, fill='both')
