@@ -261,22 +261,22 @@ class FugureFillControlPanel(tk.Frame):
 
 class Algorithms:
     @staticmethod
-    def natural_line_drawing( board, p0, p1 ):
+    def natural_line_drawing(board, p0, p1):
         x0, y0 = p0
         x1, y1 = p1
         if x0 == x1:
-            for y in range(min(y0, y1), max(y0, y1)+1):
+            for y in range(min(y0, y1), max(y0, y1) + 1):
                 board.draw_point(x0, y)
         else:
-            a = (y1 - y0) / (x1 - x0)
-            b = y0-a*x0
+            a = (y1-y0) / (x1-x0)
+            b = y0 - a*x0
             if abs(a) <= 1:
-                for x in range(min(x0, x1) , max(x0, x1)+1):
-                    y = int(round(a * x + b))
+                for x in range(min(x0, x1), max(x0, x1) + 1):
+                    y = int(round(a*x + b))
                     board.draw_point(x, y)
             else:
-                for y in range(min(y0, y1), max(y0, y1)+1):
-                    x = int(round((y - b)/a))
+                for y in range(min(y0, y1), max(y0, y1) + 1):
+                    x = int(round((y-b) / a))
                     board.draw_point(x, y)
 
     @staticmethod
