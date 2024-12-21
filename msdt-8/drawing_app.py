@@ -94,6 +94,12 @@ class InputControlPanel(tk.Frame):
         entry.grid(row=row, column=1)
         return entry
 
+    def randomize_entries(self, entries, value_ranges):
+        for entry, value_range in zip(entries, value_ranges):
+            value = random.randint(*value_range)
+            entry.delete(0, tk.END)
+            entry.insert(0, str(value))
+
 # Панель для ввода параметров отрисовки линий
 class InputLineControlPanel(InputControlPanel):
     def __init__(self, board, master, algorithm='natural'):
@@ -131,26 +137,16 @@ class InputLineControlPanel(InputControlPanel):
 
     # Генерация случайных координат и обновление полей ввода
     def random_points(self):
-        x0 = random.randint(0, 450)
-        y0 = random.randint(0, 450)
-        x1 = random.randint(0, 450)
-        y1 = random.randint(0, 450)
-        self.start_x.delete(0, tk.END)
-        self.start_y.delete(0, tk.END)
-        self.end_x.delete(0, tk.END)
-        self.end_y.delete(0, tk.END)
-        self.start_x.insert(0, str(x0))
-        self.start_y.insert(0, str(y0))
-        self.end_x.insert(0, str(x1))
-        self.end_y.insert(0, str(y1))
+        self.randomize_entries(
+            [self.start_x, self.start_y, self.end_x, self.end_y],
+            [(0, 450), (0, 450), (0, 450), (0, 450)]
+        )
         self.draw_line()
 
 # Панель для ввода параметров отрисовки окружности
 class InputCurcleControlPanel(InputControlPanel):
     def __init__(self, board, master, algorithm='natural'):
         super().__init__(board, master)
-
-        # Создание полей ввода для центра и радиуса
         self.center_x = self.create_entry("Центр X:", 0)
         self.center_y = self.create_entry("Центр Y:", 1)
         self.radius_value = self.create_entry("Радиус:", 2)
@@ -168,7 +164,6 @@ class InputCurcleControlPanel(InputControlPanel):
     # Функция отрисовки окружности
     def draw_circle(self):
         try:
-            # Получение параметров из полей ввода
             x0 = int(self.center_x.get())
             y0 = int(self.center_y.get())
             r = int(self.radius_value.get())
@@ -183,15 +178,10 @@ class InputCurcleControlPanel(InputControlPanel):
 
     # Генерация окружности со случайными параметрами
     def random_circle(self):
-        x0 = random.randint(150, 350)  # x-координата центра
-        y0 = random.randint(150, 350)  # y-координата центра
-        r = random.randint(10, 200)  # радиус
-        self.center_x.delete(0, tk.END)
-        self.center_y.delete(0, tk.END)
-        self.radius_value.delete(0, tk.END)
-        self.center_x.insert(0, str(x0))
-        self.center_y.insert(0, str(y0))
-        self.radius_value.insert(0, str(r))
+        self.randomize_entries(
+            [self.center_x, self.center_y, self.radius_value],
+            [(150, 350), (150, 350), (10, 200)]
+        )
         self.draw_circle()
 
 # Панель для ввода параметров отрисовки кривых Лиссажу
@@ -236,35 +226,18 @@ class InputLissajousControlPanel(InputControlPanel):
 
     # Генерация кривой Лиссажу по случайным параметрам
     def random_lissajous(self):
-        x0 = random.randint(100, 300)
-        y0 = random.randint(100, 300)
-        r_x = random.randint(50, 150)
-        r_y = random.randint(50, 150)
-        o_x = random.randint(1, 20)
-        o_y = random.randint(1, 20)
-        self.center_x.delete(0, tk.END)
-        self.center_y.delete(0, tk.END)
-        self.radius_x.delete(0, tk.END)
-        self.radius_y.delete(0, tk.END)
-        self.freq_x.delete(0, tk.END)
-        self.freq_y.delete(0, tk.END)
-        self.center_x.insert(0, str(x0))
-        self.center_y.insert(0, str(y0))
-        self.radius_x.insert(0, str(r_x))
-        self.radius_y.insert(0, str(r_y))
-        self.freq_x.insert(0, str(o_x))
-        self.freq_y.insert(0, str(o_y))
+        self.randomize_entries(
+            [self.center_x, self.center_y, self.radius_x, self.radius_y, self.freq_x, self.freq_y],
+            [(100, 300), (100, 300), (50, 150), (50, 150), (1, 20), (1, 20)]
+        )
         self.draw_lissajous()
 
 # Панель для ввода параметров закраски фигур
 class FugureFillControlPanel(InputControlPanel):
     def __init__(self, board, master, algorithm='modified'):
         super().__init__(board, master)
-
-        # координаты точки начала закраски
         self.start_x = self.create_entry("Начальная точка X:", 0)
         self.start_y = self.create_entry("Начальная точка Y:", 1)
-
         self.create_widgets()
 
     # Создание меток и кнопок для панели управления
@@ -314,7 +287,7 @@ class Algorithms:
         # Рисование окружности с использованием естественного алгоритма
         x_c, y_c = center
         for x in range(-radius, radius + 1):
-            y = int((radius ** 2 - x ** 2) ** 0.5)
+            y = int((radius**2 - x**2)**0.5)
             board.draw_point(x_c + x, y_c + y)  # Верхняя половина
             board.draw_point(x_c + x, y_c - y)  # Нижняя половина
 
@@ -336,10 +309,7 @@ class Algorithms:
             if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:  # Проверка границ
                 board.draw_point(x, y)
                 # Добавление соседних точек в стек
-                stack.append((x + 1, y))
-                stack.append((x - 1, y))
-                stack.append((x, y + 1))
-                stack.append((x, y - 1))
+                stack.extend([(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)])
 
 if __name__ == "__main__":
     Main()
