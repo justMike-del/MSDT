@@ -4,6 +4,10 @@ import random
 import math
 from PIL import Image, ImageDraw, ImageTk
 
+# Константы для размеров доски
+BOARD_WIDTH = 550
+BOARD_HEIGHT = 430
+
 class Main:
     def __init__(self):
         # Инициализация главного окна приложения
@@ -58,7 +62,7 @@ class DrawBoard(tk.Canvas):
     def __init__(self, master):
         super().__init__(master, bg="white")
         # Создание изображения, которое сохраняет состояние доски
-        self.image = Image.new("RGBA", (550, 430), (255, 255, 255))
+        self.image = Image.new("RGBA", (BOARD_WIDTH, BOARD_HEIGHT), (255, 255, 255))
         self.draw = ImageDraw.Draw(self.image)
         self.image_tk = ImageTk.PhotoImage(self.image)
         self.create_image(0, 0, anchor='nw', image=self.image_tk)
@@ -75,7 +79,7 @@ class DrawBoard(tk.Canvas):
 
     # Очистка доски для рисования
     def clear_board(self):
-        self.image = Image.new("RGBA", (550, 430), (255, 255, 255))  # Сброс изображения
+        self.image = Image.new("RGBA", (BOARD_WIDTH, BOARD_HEIGHT), (255, 255, 255))  # Сброс изображения
         self.paint()
 
 # Панель для ввода параметров отрисовки линий
@@ -280,7 +284,7 @@ class FugureFillControlPanel(tk.Frame):
         clear_button = tk.Button(self, text="Очистить", command=self.clear_board)
         clear_button.grid(row=1, column=2)
 
-    # Закраска фигур модицицированным рекурсивным алгоритмом
+    # Закраска фигур модифицированным рекурсивным алгоритмом
     def fill(self):
         x0 = int(self.start_x.get())
         y0 = int(self.start_y.get())
@@ -336,7 +340,7 @@ class Algorithms:
         stack = [(x0, y0)]  # Добавляем в стек "затравку"
         while stack:
             x, y = stack.pop()
-            if 0 <= x < 550 and 0 <= y < 430:  # Проверка границ
+            if 0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT:  # Проверка границ
                 board.draw_point(x, y)
                 # Добавление соседних точек в стек
                 stack.append((x + 1, y))
