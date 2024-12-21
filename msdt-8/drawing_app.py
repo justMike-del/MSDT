@@ -82,43 +82,48 @@ class DrawBoard(tk.Canvas):
         self.image = Image.new("RGBA", (BOARD_WIDTH, BOARD_HEIGHT), (255, 255, 255))  # Сброс изображения
         self.paint()
 
-# Панель для ввода параметров отрисовки линий
-class InputLineControlPanel(tk.Frame):
-    def __init__(self, board, master, algorithm='natural'):
+# Базовый класс для панелей ввода
+class InputControlPanel(tk.Frame):
+    def __init__(self, board, master):
         super().__init__(master)
         self.board = board
-        # Создание полей ввода для начальных и конечных точек
-        self.start_x = tk.Entry(self, width=3)
-        self.start_y = tk.Entry(self, width=3)
-        self.end_x = tk.Entry(self, width=3)
-        self.end_y = tk.Entry(self, width=3)
 
-        self.create_widgets(algorithm)
+    def create_entry(self, label_text, row):
+        tk.Label(self, text=label_text).grid(row=row, column=0)
+        entry = tk.Entry(self, width=3)
+        entry.grid(row=row, column=1)
+        return entry
+
+# Панель для ввода параметров отрисовки линий
+class InputLineControlPanel(InputControlPanel):
+    def __init__(self, board, master, algorithm='natural'):
+        super().__init__(board, master)
+        self.start_x = self.create_entry("Начальная точка X:", 0)
+        self.start_y = self.create_entry("Начальная точка Y:", 1)
+        self.end_x = self.create_entry("Конечная точка X:", 2)
+        self.end_y = self.create_entry("Конечная точка Y:", 3)
+        self.create_widgets()
 
     # Создание меток и кнопок для панели управления
-    def create_widgets(self, algorithm):
-        tk.Label(self, text="Начальная точка:").grid(row=0, column=0)
-        tk.Label(self, text="Конечная точка:").grid(row=1, column=0)
-        # Размещение полей ввода в сетке
-        self.start_x.grid(row=0, column=1)
-        self.start_y.grid(row=0, column=2)
-        self.end_x.grid(row=1, column=1)
-        self.end_y.grid(row=1, column=2)
+    def create_widgets(self):
         draw_button = tk.Button(self, text="Отрисовка", command=self.draw_line)
-        draw_button.grid(row=2, column=0, columnspan=2)
+        draw_button.grid(row=4, column=0, columnspan=2)
         clear_button = tk.Button(self, text="Очистить", command=self.clear_board)
-        clear_button.grid(row=2, column=2)
+        clear_button.grid(row=4, column=2)
         random_button = tk.Button(self, text="Рандом", command=self.random_points)
-        random_button.grid(row=2, column=3)
+        random_button.grid(row=4, column=3)
 
     # Функция отрисовки линии
     def draw_line(self):
-        x0 = int(self.start_x.get())
-        y0 = int(self.start_y.get())
-        x1 = int(self.end_x.get())
-        y1 = int(self.end_y.get())
-        Algorithms.natural_line_drawing(self.board, (x0, y0), (x1, y1))
-        self.board.paint()
+        try:
+            x0 = int(self.start_x.get())
+            y0 = int(self.start_y.get())
+            x1 = int(self.end_x.get())
+            y1 = int(self.end_y.get())
+            Algorithms.natural_line_drawing(self.board, (x0, y0), (x1, y1))
+            self.board.paint()
+        except ValueError:
+            print("Ошибка: введите корректные целые числа.")
 
     # Очистка панели рисования
     def clear_board(self):
@@ -141,39 +146,36 @@ class InputLineControlPanel(tk.Frame):
         self.draw_line()
 
 # Панель для ввода параметров отрисовки окружности
-class InputCurcleControlPanel(tk.Frame):
+class InputCurcleControlPanel(InputControlPanel):
     def __init__(self, board, master, algorithm='natural'):
-        super().__init__(master)
-        self.board = board
+        super().__init__(board, master)
 
         # Создание полей ввода для центра и радиуса
-        self.center_x = tk.Entry(self, width=3)
-        self.center_y = tk.Entry(self, width=3)
-        self.radius_value = tk.Entry(self, width=3)
-        self.create_widgets(algorithm)
+        self.center_x = self.create_entry("Центр X:", 0)
+        self.center_y = self.create_entry("Центр Y:", 1)
+        self.radius_value = self.create_entry("Радиус:", 2)
+        self.create_widgets()
 
     # Создание меток и кнопок для панели управления
-    def create_widgets(self, algorithm):
-        tk.Label(self, text="Центр:").grid(row=0, column=0)
-        tk.Label(self, text="Радиус:").grid(row=1, column=0)
-        self.center_x.grid(row=0, column=1)
-        self.center_y.grid(row=0, column=2)
-        self.radius_value.grid(row=1, column=1)
+    def create_widgets(self):
         draw_button = tk.Button(self, text="Отрисовка", command=self.draw_circle)
-        draw_button.grid(row=2, column=0, columnspan=2)
+        draw_button.grid(row=3, column=0, columnspan=2)
         clear_button = tk.Button(self, text="Очистить", command=self.clear_board)
-        clear_button.grid(row=2, column=2)
+        clear_button.grid(row=3, column=2)
         random_button = tk.Button(self, text="Рандом", command=self.random_circle)
-        random_button.grid(row=2, column=3)
+        random_button.grid(row=3, column=3)
 
     # Функция отрисовки окружности
     def draw_circle(self):
-        # Получение параметров из полей ввода
-        x0 = int(self.center_x.get())
-        y0 = int(self.center_y.get())
-        r = int(self.radius_value.get())
-        Algorithms.natural_circle_drawing(self.board, (x0, y0), r)
-        self.board.paint()
+        try:
+            # Получение параметров из полей ввода
+            x0 = int(self.center_x.get())
+            y0 = int(self.center_y.get())
+            r = int(self.radius_value.get())
+            Algorithms.natural_circle_drawing(self.board, (x0, y0), r)
+            self.board.paint()
+        except ValueError:
+            print("Ошибка: введите корректные целые числа.")
 
     # Очистка панели рисования
     def clear_board(self):
@@ -193,48 +195,40 @@ class InputCurcleControlPanel(tk.Frame):
         self.draw_circle()
 
 # Панель для ввода параметров отрисовки кривых Лиссажу
-class InputLissajousControlPanel(tk.Frame):
+class InputLissajousControlPanel(InputControlPanel):
     def __init__(self, board, master):
-        super().__init__(master)
-        self.board = board
-        self.center_x = tk.Entry(self, width=3)
-        self.center_y = tk.Entry(self, width=3)
-        self.radius_x = tk.Entry(self, width=3)
-        self.radius_y = tk.Entry(self, width=3)
-        self.freq_x = tk.Entry(self, width=3)  # частота по х
-        self.freq_y = tk.Entry(self, width=3)  # частота по y
-
+        super().__init__(board, master)
+        self.center_x = self.create_entry("Центр X:", 0)
+        self.center_y = self.create_entry("Центр Y:", 1)
+        self.radius_x = self.create_entry("Радиус X:", 2)
+        self.radius_y = self.create_entry("Радиус Y:", 3)
+        self.freq_x = self.create_entry("Частота X:", 4)  # частота по х
+        self.freq_y = self.create_entry("Частота Y:", 5)  # частота по y
         self.create_widgets()
 
     # Создание меток и кнопок для панели управления
     def create_widgets(self):
-        tk.Label(self, text="Центр:").grid(row=0, column=0)
-        tk.Label(self, text="Радиусы:").grid(row=1, column=0)
-        tk.Label(self, text="Частоты:").grid(row=2, column=0)
-        self.center_x.grid(row=0, column=1)
-        self.center_y.grid(row=0, column=2)
-        self.radius_x.grid(row=1, column=1)
-        self.radius_y.grid(row=1, column=2)
-        self.freq_x.grid(row=2, column=1)
-        self.freq_y.grid(row=2, column=2)
         draw_button = tk.Button(self, text="Отрисовка", command=self.draw_lissajous)
-        draw_button.grid(row=3, column=0, columnspan=2)
+        draw_button.grid(row=6, column=0, columnspan=2)
         clear_button = tk.Button(self, text="Очистить", command=self.clear_board)
-        clear_button.grid(row=3, column=2)
+        clear_button.grid(row=6, column=2)
         random_button = tk.Button(self, text="Рандом", command=self.random_lissajous)
-        random_button.grid(row=3, column=3)
+        random_button.grid(row=6, column=3)
 
     # Отрисовка кривой Лиссажу
     def draw_lissajous(self):
-        x0 = int(self.center_x.get())
-        y0 = int(self.center_y.get())
-        r_x = int(self.radius_x.get())
-        r_y = int(self.radius_y.get())
-        o_x = int(self.freq_x.get())
-        o_y = int(self.freq_y.get())
-        Algorithms.parameter_lissajous_drawing(self.board, (x0, y0),
-                                               r_x, r_y, o_x, o_y)
-        self.board.paint()
+        try:
+            x0 = int(self.center_x.get())
+            y0 = int(self.center_y.get())
+            r_x = int(self.radius_x.get())
+            r_y = int(self.radius_y.get())
+            o_x = int(self.freq_x.get())
+            o_y = int(self.freq_y.get())
+            Algorithms.parameter_lissajous_drawing(self.board, (x0, y0),
+                                                   r_x, r_y, o_x, o_y)
+            self.board.paint()
+        except ValueError:
+            print("Ошибка: введите корректные целые числа.")
 
     # Очистка панели рисования
     def clear_board(self):
@@ -263,33 +257,32 @@ class InputLissajousControlPanel(tk.Frame):
         self.draw_lissajous()
 
 # Панель для ввода параметров закраски фигур
-class FugureFillControlPanel(tk.Frame):
+class FugureFillControlPanel(InputControlPanel):
     def __init__(self, board, master, algorithm='modified'):
-        super().__init__(master)
-        self.board = board
+        super().__init__(board, master)
 
         # координаты точки начала закраски
-        self.start_x = tk.Entry(self, width=3)
-        self.start_y = tk.Entry(self, width=3)
+        self.start_x = self.create_entry("Начальная точка X:", 0)
+        self.start_y = self.create_entry("Начальная точка Y:", 1)
 
         self.create_widgets()
 
     # Создание меток и кнопок для панели управления
     def create_widgets(self):
-        tk.Label(self, text="Начальная точка:").grid(row=0, column=0)
-        self.start_x.grid(row=0, column=1)
-        self.start_y.grid(row=0, column=2)
         draw_button = tk.Button(self, text="Отрисовка", command=self.fill)
-        draw_button.grid(row=1, column=0, columnspan=2)
+        draw_button.grid(row=2, column=0, columnspan=2)
         clear_button = tk.Button(self, text="Очистить", command=self.clear_board)
-        clear_button.grid(row=1, column=2)
+        clear_button.grid(row=2, column=2)
 
     # Закраска фигур модифицированным рекурсивным алгоритмом
     def fill(self):
-        x0 = int(self.start_x.get())
-        y0 = int(self.start_y.get())
-        Algorithms.modified_recurant_fill(self.board, x0, y0)
-        self.board.paint()
+        try:
+            x0 = int(self.start_x.get())
+            y0 = int(self.start_y.get())
+            Algorithms.modified_recurant_fill(self.board, x0, y0)
+            self.board.paint()
+        except ValueError:
+            print("Ошибка: введите корректные целые числа.")
 
     # Очистка панели рисования
     def clear_board(self):
@@ -321,7 +314,7 @@ class Algorithms:
         # Рисование окружности с использованием естественного алгоритма
         x_c, y_c = center
         for x in range(-radius, radius + 1):
-            y = int((radius**2 - x**2)**0.5)
+            y = int((radius ** 2 - x ** 2) ** 0.5)
             board.draw_point(x_c + x, y_c + y)  # Верхняя половина
             board.draw_point(x_c + x, y_c - y)  # Нижняя половина
 
